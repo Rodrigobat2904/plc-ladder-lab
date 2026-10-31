@@ -1,0 +1,732 @@
+/**
+ * LadderLab — White Modern Minimalist Design System
+ * Clean architectural light theme inspired by Braun, Siemens TIA Light, and Linear.
+ */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-hover: #f8fafc;
+  --border-light: #e2e8f0;
+  --border-focus: #94a3b8;
+
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --accent-blue: #2563eb;
+  --accent-blue-soft: #eff6ff;
+  --accent-blue-border: #bfdbfe;
+
+  --power-green: #10b981;
+  --power-green-dark: #059669;
+  --power-green-soft: #ecfdf5;
+  --power-green-border: #6ee7b7;
+
+  --amber-warn: #d97706;
+  --amber-soft: #fffbeb;
+  --amber-border: #fde68a;
+
+  --danger-red: #dc2626;
+  --danger-soft: #fef2f2;
+  --danger-border: #fecaca;
+
+  --wire-idle: #cbd5e1;
+  --wire-active: #10b981;
+
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.025);
+  --shadow-float: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Top Navigation Header */
+header.top-nav {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: var(--text-main);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.5px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+}
+
+.brand-text h1 {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.brand-text p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Header Controls */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.select-modern {
+  appearance: none;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 32px 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23475569' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: all 0.15s ease;
+}
+
+.select-modern:hover {
+  border-color: var(--border-focus);
+  background-color: #ffffff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-focus);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: #ffffff;
+  border-color: var(--accent-blue);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.btn-run {
+  background: var(--power-green-dark);
+  color: #ffffff;
+  border-color: var(--power-green-dark);
+}
+
+.btn-run:hover {
+  background: #047857;
+  border-color: #047857;
+}
+
+.btn-stop {
+  background: var(--danger-soft);
+  color: var(--danger-red);
+  border-color: var(--danger-border);
+}
+
+.btn-stop:hover {
+  background: #fee2e2;
+}
+
+.btn-soft-blue {
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  border-color: var(--accent-blue-border);
+}
+
+.btn-soft-blue:hover {
+  background: #dbeafe;
+}
+
+/* Main Workspace Layout */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  padding: 18px 24px 28px;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+}
+
+@media (max-width: 1120px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Minimalist White Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+}
+
+.card-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+/* PLC Status Pill */
+.plc-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plc-badge .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.plc-badge.run {
+  background: var(--power-green-soft);
+  color: var(--power-green-dark);
+  border: 1px solid var(--power-green-border);
+}
+
+.plc-badge.run .dot {
+  background: var(--power-green);
+  box-shadow: 0 0 6px var(--power-green);
+}
+
+.plc-badge.stop {
+  background: var(--amber-soft);
+  color: var(--amber-warn);
+  border: 1px solid var(--amber-border);
+}
+
+.plc-badge.stop .dot {
+  background: var(--amber-warn);
+}
+
+/* Mission Brief Box */
+.mission-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.mission-desc {
+  font-size: 0.81rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+
+.objective-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.objective-list li {
+  font-size: 0.77rem;
+  color: var(--text-secondary);
+  padding: 7px 10px;
+  background: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.objective-list li::before {
+  content: "•";
+  color: var(--accent-blue);
+  font-weight: bold;
+}
+
+/* PLC Digital I/O Rack Monitor */
+.io-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 10px 0 6px;
+}
+
+.io-section-title:first-child {
+  margin-top: 0;
+}
+
+.io-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.io-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 9px;
+  background: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  transition: all 0.12s ease;
+}
+
+.io-chip.active-in {
+  background: var(--accent-blue-soft);
+  border-color: var(--accent-blue-border);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.io-chip.active-out {
+  background: var(--power-green-soft);
+  border-color: var(--power-green-border);
+  color: var(--power-green-dark);
+  font-weight: 600;
+}
+
+.io-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: all 0.12s ease;
+}
+
+.io-chip.active-in .io-led {
+  background: var(--accent-blue);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.5);
+}
+
+.io-chip.active-out .io-led {
+  background: var(--power-green);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+/* SCADA Plant Canvas Container */
+.scada-canvas-wrap {
+  background:
+    radial-gradient(#cbd5e1 1px, transparent 1px) 0 0 / 20px 20px,
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+  width: 100%;
+  height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#scada-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 920px;
+}
+
+/* Operator Control Station Bar */
+.operator-bar {
+  padding: 12px 16px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.operator-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.op-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: var(--radius-md);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  background: #ffffff;
+  color: var(--text-main);
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.op-btn.start-pb {
+  background: var(--power-green-soft);
+  color: var(--power-green-dark);
+  border-color: var(--power-green-border);
+}
+
+.op-btn.start-pb:hover,
+.op-btn.start-pb.pressed {
+  background: var(--power-green);
+  color: #ffffff;
+  border-color: var(--power-green-dark);
+}
+
+.op-btn.stop-pb {
+  background: var(--danger-soft);
+  color: var(--danger-red);
+  border-color: var(--danger-border);
+}
+
+.op-btn.stop-pb:hover,
+.op-btn.stop-pb.pressed {
+  background: var(--danger-red);
+  color: #ffffff;
+}
+
+.op-btn.fault-pb.tripped {
+  background: var(--amber-warn);
+  color: #ffffff;
+  border-color: var(--amber-warn);
+}
+
+/* Ladder Diagram Editor Area */
+.ladder-workspace {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg-page);
+}
+
+.rung-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.rung-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.rung-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.rung-hint-tag {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.rung-svg-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ladder-rung-svg {
+  width: 100%;
+  min-width: 680px;
+  height: 112px;
+  display: block;
+}
+
+.ladder-slot {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.ladder-slot:hover .slot-box {
+  stroke: var(--accent-blue) !important;
+  stroke-width: 2px !important;
+  fill: #f8fafc !important;
+}
+
+/* Diagnostic Console & Verification Report */
+.diag-box {
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.diag-item {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: var(--bg-page);
+}
+
+.diag-item.pass {
+  background: var(--power-green-soft);
+  border-color: var(--power-green-border);
+}
+
+.diag-item.fail {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+}
+
+.diag-item-title {
+  font-weight: 700;
+  font-size: 0.76rem;
+  margin-bottom: 2px;
+}
+
+.diag-item.pass .diag-item-title {
+  color: var(--power-green-dark);
+}
+
+.diag-item.fail .diag-item-title {
+  color: var(--danger-red);
+}
+
+.diag-item-detail {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+/* Modal / Popover for Editing Ladder Contact/Coil */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-float);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.type-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.type-option-btn {
+  padding: 10px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.12s ease;
+}
+
+.type-option-btn:hover {
+  border-color: var(--border-focus);
+}
+
+.type-option-btn.selected {
+  background: var(--accent-blue-soft);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+
+.type-option-symbol {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.type-option-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.input-modern {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-main);
+  background: var(--bg-page);
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-page);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

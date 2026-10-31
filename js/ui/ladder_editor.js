@@ -1,0 +1,218 @@
+/**
+ * LadderLab — Interactive IEC 61131-3 Ladder Diagram SVG Renderer & Slot Editor
+ * Renders live green power flow and supports clicking any contact, parallel branch, or coil to edit.
+ */
+
+class LadderEditorUI {
+  constructor(containerEl, plc, onSlotClick) {
+    this.container = containerEl;
+    this.plc = plc;
+    this.onSlotClick = onSlotClick;
+  }
+
+  /**
+   * Build the DOM structure for all rungs
+   */
+  renderAllRungs() {
+    this.container.innerHTML = '';
+
+    this.plc.rungs.forEach((rung, rIdx) => {
+      const card = document.createElement('div');
+      card.className = 'rung-card';
+
+      const header = document.createElement('div');
+      header.className = 'rung-header';
+      header.innerHTML = `
+        <span class="rung-title">${rung.title}</span>
+        <span class="rung-hint-tag">Klik kotak kontak / cabang paralel / coil untuk mengubah logika</span>
+      `;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'rung-svg-wrap';
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 740 112');
+      svg.setAttribute('class', 'ladder-rung-svg');
+      svg.dataset.rungIndex = rIdx;
+
+      wrap.appendChild(svg);
+      card.appendChild(header);
+      card.appendChild(wrap);
+      this.container.appendChild(card);
+
+      this.drawRungSVG(svg, rung, rIdx);
+    });
+  }
+
+  /**
+   * Update only the SVG contents on scan ticks for smooth 50Hz online monitoring
+   */
+  updatePowerFlow() {
+    const svgs = this.container.querySelectorAll('.ladder-rung-svg');
+    svgs.forEach(svg => {
+      const rIdx = Number(svg.dataset.rungIndex);
+      const rung = this.plc.rungs[rIdx];
+      if (rung) {
+        this.drawRungSVG(svg, rung, rIdx);
+      }
+    });
+  }
+
+  drawRungSVG(svg, rung, rIdx) {
+    const isRun = this.plc.mode === 'RUN';
+    const f = rung.flow || {};
+    const cWireOn = '#10b981';
+    const cWireOff = '#cbd5e1';
+
+    const railColor = isRun ? cWireOn : '#94a3b8';
+    const wAfterC1 = (isRun && f.c1Flow) ? cWireOn : cWireOff;
+    const wBranch = (isRun && f.branchFlow) ? cWireOn : cWireOff;
+    const wAfterBranch = (isRun && f.afterBranchFlow) ? cWireOn : cWireOff;
+    const wAfterC2 = (isRun && f.c2Flow) ? cWireOn : cWireOff;
+    const wAfterC3 = (isRun && f.rungFlow) ? cWireOn : cWireOff;
+
+    const hasBranch = rung.branch && rung.branch.type !== 'NONE';
+
+    svg.innerHTML = `
+      <!-- Left 24V Power Rail -->
+      <line x1="16" y1="6" x2="16" y2="106" stroke="${railColor}" stroke-width="4" stroke-linecap="round" />
+      <!-- Right 0V Return Rail -->
+      <line x1="724" y1="6" x2="724" y2="106" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+
+      <!-- Main Rung Horizontal Wires -->
+      <line x1="16" y1="34" x2="65" y2="34" stroke="${railColor}" stroke-width="2.6" />
+      <line x1="165" y1="34" x2="195" y2="34" stroke="${wAfterC1}" stroke-width="2.6" />
+      <line x1="195" y1="34" x2="230" y2="34" stroke="${wAfterBranch}" stroke-width="2.6" />
+      <line x1="330" y1="34" x2="380" y2="34" stroke="${wAfterC2}" stroke-width="2.6" />
+      <line x1="480" y1="34" x2="545" y2="34" stroke="${wAfterC3}" stroke-width="2.6" />
+      <line x1="685" y1="34" x2="724" y2="34" stroke="${wAfterC3}" stroke-width="2.6" />
+
+      <!-- Parallel Branch Drop Wires (around Contact 1) -->
+      <path d="M 42 34 L 42 84 L 65 84" fill="none" stroke="${hasBranch ? railColor : '#e2e8f0'}" stroke-width="${hasBranch ? '2.4' : '1.5'}" ${hasBranch ? '' : 'stroke-dasharray="4 3"'} />
+      <path d="M 165 84 L 195 84 L 195 34" fill="none" stroke="${hasBranch ? wBranch : '#e2e8f0'}" stroke-width="${hasBranch ? '2.4' : '1.5'}" ${hasBranch ? '' : 'stroke-dasharray="4 3"'} />
+
+      <!-- Slot C1 (Series Contact 1) -->
+      ${this.renderContactSlotSVG(rung.c1, 65, 12, 'c1', isRun && f.c1Cond, isRun && f.c1Flow, 'Contact 1')}
+
+      <!-- Slot Branch (Parallel Seal-in / OR Contact) -->
+      ${this.renderBranchSlotSVG(rung.branch, 65, 62, 'branch', isRun && f.branchCond, isRun && f.branchFlow)}
+
+      <!-- Slot C2 (Series Contact 2) -->
+      ${this.renderContactSlotSVG(rung.c2, 230, 12, 'c2', isRun && f.c2Cond, isRun && f.c2Flow, 'Contact 2')}
+
+      <!-- Slot C3 (Series Contact 3) -->
+      ${this.renderContactSlotSVG(rung.c3, 380, 12, 'c3', isRun && f.c3Cond, isRun && f.c3Flow, 'Contact 3')}
+
+      <!-- Slot Coil / Function Block -->
+      ${this.renderCoilSlotSVG(rung.coil, 545, 8, 'coil', isRun && f.rungFlow, isRun && f.coilActive)}
+    `;
+
+    // Attach click listeners to each interactive slot
+    svg.querySelectorAll('.ladder-slot').forEach(slotEl => {
+      slotEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const slotKey = slotEl.dataset.slotKey;
+        if (this.onSlotClick) {
+          this.onSlotClick(rIdx, slotKey);
+        }
+      });
+    });
+  }
+
+  renderContactSlotSVG(slot, x, y, slotKey, isClosed, isEnergized, placeholderLabel) {
+    const info = this.plc.getAddressInfo(slot.address);
+    const w = 100;
+    const h = 44;
+
+    if (!slot || slot.type === 'NONE') {
+      const wireCol = isEnergized ? '#10b981' : '#cbd5e1';
+      return `
+        <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})">
+          <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" stroke-dasharray="3 3" />
+          <line x1="0" y1="22" x2="${w}" y2="22" stroke="${wireCol}" stroke-width="2.6" />
+          <text x="${w / 2}" y="14" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="8.5" font-weight="600">+ ${placeholderLabel}</text>
+        </g>
+      `;
+    }
+
+    const bgFill = isEnergized ? '#ecfdf5' : (isClosed ? '#f0fdf4' : '#ffffff');
+    const borderCol = isEnergized ? '#10b981' : (isClosed ? '#6ee7b7' : '#cbd5e1');
+    const symCol = isEnergized ? '#059669' : '#0f172a';
+
+    const ncSlash = slot.type === 'NC'
+      ? `<line x1="39" y1="30" x2="61" y2="14" stroke="${symCol}" stroke-width="2.2" />`
+      : '';
+
+    return `
+      <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})">
+        <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="${bgFill}" stroke="${borderCol}" stroke-width="1.6" />
+        <!-- Address & Symbolic Tag -->
+        <text x="${w / 2}" y="11" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${slot.address} (${ info.symbol })</text>
+        <!-- IEC Contact Parallel Bars -->
+        <line x1="0" y1="22" x2="40" y2="22" stroke="${symCol}" stroke-width="2.2" />
+        <line x1="40" y1="13" x2="40" y2="31" stroke="${symCol}" stroke-width="2.4" />
+        <line x1="60" y1="13" x2="60" y2="31" stroke="${symCol}" stroke-width="2.4" />
+        <line x1="60" y1="22" x2="${w}" y2="22" stroke="${symCol}" stroke-width="2.2" />
+        ${ncSlash}
+        <text x="${w / 2}" y="40" text-anchor="middle" fill="#64748b" font-family="JetBrains Mono, monospace" font-size="7.5" font-weight="600">${slot.type}</text>
+      </g>
+    `;
+  }
+
+  renderBranchSlotSVG(slot, x, y, slotKey, isClosed, isEnergized) {
+    const w = 100;
+    const h = 44;
+    if (!slot || slot.type === 'NONE') {
+      return `
+        <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})">
+          <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="4 3" />
+          <text x="${w / 2}" y="25" text-anchor="middle" fill="#64748b" font-family="Inter, sans-serif" font-size="8.5" font-weight="600">+ Cabang Latch (OR)</text>
+        </g>
+      `;
+    }
+    return this.renderContactSlotSVG(slot, x, y, slotKey, isClosed, isEnergized, 'Branch');
+  }
+
+  renderCoilSlotSVG(coil, x, y, slotKey, rungInFlow, coilActive) {
+    const w = 140;
+    const h = 52;
+    const info = this.plc.getAddressInfo(coil.address);
+
+    const bgFill = coilActive ? '#ecfdf5' : (rungInFlow ? '#eff6ff' : '#ffffff');
+    const borderCol = coilActive ? '#10b981' : (rungInFlow ? '#60a5fa' : '#cbd5e1');
+    const symCol = coilActive ? '#059669' : '#0f172a';
+
+    if (coil.type === 'TON' || coil.type === 'CTU') {
+      const isTimer = coil.type === 'TON';
+      const statusText = isTimer
+        ? `ET: ${Math.round((this.plc.timers[coil.address] || { et: 0 }).et)} / ${coil.preset || 1500}ms`
+        : `CV: ${(this.plc.counters[coil.address] || { cv: 0 }).cv} / ${coil.preset || 5}`;
+
+      return `
+        <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})">
+          <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="${bgFill}" stroke="${borderCol}" stroke-width="1.8" />
+          <rect x="0" y="0" width="${w}" height="16" rx="6" fill="${coilActive ? '#10b981' : '#f1f5f9'}" />
+          <text x="${w / 2}" y="11.5" text-anchor="middle" fill="${coilActive ? '#ffffff' : '#0f172a'}" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">[${coil.type}] ${coil.address} (${info.symbol})</text>
+          <text x="${w / 2}" y="31" text-anchor="middle" fill="${symCol}" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="700">${statusText}</text>
+          <text x="${w / 2}" y="45" text-anchor="middle" fill="#64748b" font-family="JetBrains Mono, monospace" font-size="7.5">DN Bit: ${coilActive ? '1 (HIGH)' : '0 (LOW)'}</text>
+        </g>
+      `;
+    }
+
+    const innerChar = coil.type === 'SET' ? 'S' : (coil.type === 'RST' ? 'R' : (coil.type === 'RES' ? 'RES' : ''));
+
+    return `
+      <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})">
+        <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="${bgFill}" stroke="${borderCol}" stroke-width="1.6" />
+        <text x="${w / 2}" y="13" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${coil.address} (${info.symbol})</text>
+        <!-- IEC Coil Parentheses -->
+        <line x1="0" y1="26" x2="48" y2="26" stroke="${symCol}" stroke-width="2.2" />
+        <path d="M 55 16 A 12 12 0 0 0 55 36" fill="none" stroke="${symCol}" stroke-width="2.4" />
+        <path d="M 85 16 A 12 12 0 0 1 85 36" fill="none" stroke="${symCol}" stroke-width="2.4" />
+        <text x="70" y="29" text-anchor="middle" fill="${symCol}" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${innerChar}</text>
+        <line x1="92" y1="26" x2="${w}" y2="26" stroke="${symCol}" stroke-width="2.2" />
+        <text x="${w / 2}" y="46" text-anchor="middle" fill="#64748b" font-family="JetBrains Mono, monospace" font-size="7.5" font-weight="600">COIL (${coil.type})</text>
+      </g>
+    `;
+  }
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>LadderLab — Industrial PLC Ladder Logic & Smart Factory SCADA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=20261101_01" />
+</head>
+<body>
+
+  <!-- Top Minimalist Header -->
+  <header class="top-nav">
+    <div class="brand-wrap">
+      <div class="brand-logo">LD</div>
+      <div class="brand-text">
+        <h1>
+          LadderLab Studio
+          <span class="tag-pill">IEC 61131-3 PLC &amp; SCADA Simulator</span>
+        </h1>
+        <p>Interactive Programmable Logic Controller Scan Engine, Live Power-Flow Monitoring &amp; 2D Smart Factory</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <select id="mission-select" class="select-modern" aria-label="Pilih Misi Industri">
+        <option value="0">Misi 01: Self-Holding Conveyor &amp; Overload Interlock</option>
+        <option value="1">Misi 02: Automated Sensor Stamping &amp; Timer (TON)</option>
+        <option value="2">Misi 03: Batch Counter &amp; Crate Limiter (CTU)</option>
+      </select>
+      <button id="btn-hint" class="btn">💡 Petunjuk</button>
+      <button id="btn-autobuild" class="btn btn-soft-blue">⚡ Auto-Build Solusi</button>
+      <button id="btn-verify-run" class="btn btn-run">✓ Verifikasi &amp; Run PLC</button>
+      <button id="btn-plc-stop" class="btn btn-stop">⏹ Stop PLC</button>
+    </div>
+  </header>
+
+  <!-- Main Split-Screen Grid -->
+  <main class="workspace-grid">
+
+    <!-- LEFT COLUMN: Mission Brief, PLC I/O Rack Monitor, & Diagnostics -->
+    <aside class="col-stack">
+
+      <!-- Mission Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-title">📋 Spesifikasi Misi Industri</span>
+          <span id="plc-status-badge" class="plc-badge run"><span class="dot"></span> PLC: RUN</span>
+        </div>
+        <div class="card-body">
+          <div id="mission-title" class="mission-title">Misi 01: DOL Motor Latching</div>
+          <p id="mission-desc" class="mission-desc"></p>
+          <ul id="objective-list" class="objective-list"></ul>
+        </div>
+      </section>
+
+      <!-- Live PLC Digital I/O & Memory Rack -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-title">🎛️ PLC I/O &amp; Register Monitor</span>
+          <span id="scan-time-txt" style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);">Scan: 1.2 ms</span>
+        </div>
+        <div class="card-body" id="io-monitor-container"></div>
+      </section>
+
+      <!-- Behavioral Verification Diagnostics -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-title">🔍 Hardware &amp; Logic Diagnostics</span>
+        </div>
+        <div class="card-body">
+          <div id="diag-container" class="diag-box"></div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- RIGHT COLUMN: 2D Animated Smart Factory SCADA + Interactive Ladder Editor -->
+    <div class="col-stack">
+
+      <!-- 2D Smart Factory SCADA View -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-title">🏭 2D Smart Factory Plant (Real-Time SCADA HMI)</span>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 0.74rem; color: var(--text-muted);">Hijau = Energi Aktif (24V DC)</span>
+          </div>
+        </div>
+
+        <div class="scada-canvas-wrap">
+          <svg id="scada-svg"></svg>
+        </div>
+
+        <!-- Operator Pushbutton Control Station -->
+        <div class="operator-bar">
+          <div class="operator-buttons">
+            <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-right: 4px;">Panel Operator:</span>
+            <button id="btn-op-start" class="op-btn start-pb">🟢 START (I0.0)</button>
+            <button id="btn-op-stop" class="op-btn stop-pb">🔴 STOP (I0.1)</button>
+            <button id="btn-op-overload" class="op-btn fault-pb">🛡️ Simulate Overload (I0.3)</button>
+          </div>
+          <div class="operator-buttons">
+            <button id="btn-op-spawn" class="op-btn">📦 + Tambah Kardus</button>
+            <button id="btn-op-reset-cnt" class="op-btn">🔄 Reset Counter (C0=0)</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Ladder Logic Diagram Editor -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-title">⚡ IEC 61131-3 Ladder Diagram Editor (Online Monitoring)</span>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-reset-rungs" class="btn" style="padding: 5px 10px; font-size: 0.74rem;">↺ Reset Puzzle</button>
+          </div>
+        </div>
+        <div id="ladder-workspace" class="ladder-workspace"></div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Modal for Editing a Ladder Slot (Contact / Branch / Coil) -->
+  <div id="slot-modal-backdrop" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="slot-modal-title">Konfigurasi Elemen Ladder</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>1. Pilih Tipe Instruksi IEC 61131-3</label>
+          <div id="type-selector-grid" class="type-selector-grid"></div>
+        </div>
+        <div class="form-group">
+          <label for="slot-address-select">2. Pilih Alamat Bit / Register PLC</label>
+          <select id="slot-address-select" class="input-modern"></select>
+        </div>
+        <div id="slot-preset-group" class="form-group" style="display: none;">
+          <label for="slot-preset-input">3. Nilai Preset (ms untuk TON / jumlah untuk CTU)</label>
+          <input id="slot-preset-input" type="number" class="input-modern" value="1500" min="1" max="10000" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="btn">Batal</button>
+        <button id="btn-modal-save" class="btn btn-primary">Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/engine/plc.js?v=20261101_01"></script>
+  <script src="js/engine/plant.js?v=20261101_01"></script>
+  <script src="js/missions/missions.js?v=20261101_01"></script>
+  <script src="js/ui/scada_view.js?v=20261101_01"></script>
+  <script src="js/ui/ladder_editor.js?v=20261101_01"></script>
+  <script src="js/app.js?v=20261101_01"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ class LadderLabApp {
     this.editingRungIdx = null;
     this.editingSlotKey = null;
     this.tempSlotType = 'NO';
+    this.lastIOSignature = '';
 
     this.initDOM();
     this.scadaView = new ScadaView(this.svgScada, this.plc, this.plant);
@@ -226,6 +227,10 @@ class LadderLabApp {
     const inKeys = ['I0.0', 'I0.1', 'I0.2', 'I0.3'];
     const outKeys = ['Q0.0', 'Q0.1', 'Q0.2', 'Q0.3'];
     const memKeys = ['M0.0', 'T0', 'C0'];
+
+    const sig = [...inKeys, ...outKeys, ...memKeys].map(k => (this.plc.getBit(k) ? '1' : '0')).join('');
+    if (this.lastIOSignature === sig) return;
+    this.lastIOSignature = sig;
 
     const makeChip = (addr, isOutput = false) => {
       const val = this.plc.getBit(addr);

@@ -37,3 +37,11 @@
 ```bash
 node tests/test_plc_engine.js
 ```
+
+---
+
+## 🌐 Live Web Demo
+
+Play the live PLC & Smart Factory SCADA simulator directly in your browser:  
+👉 **[https://rodrigobat2904.github.io/plc-ladder-lab/](https://rodrigobat2904.github.io/plc-ladder-lab/)**
+

@@ -88,13 +88,13 @@ class LadderLabApp {
       this.plc.resetState();
       this.plant.resetPlant();
       this.ladderEditor.renderAllRungs();
-      this.renderVerificationReport(null, 'Rangkaian di-reset ke kondisi awal puzzle.');
+      this.renderVerificationReport(null, 'Ladder diagram reset to initial mission state.');
     });
 
     // Hint button
     document.getElementById('btn-hint').addEventListener('click', () => {
       const m = PLC_MISSIONS[this.currentMissionIdx];
-      alert(`💡 Petunjuk Misi ${m.number}:\n\n${m.hint}`);
+      alert(`💡 Engineering Hint — Mission ${m.number}:\n\n${m.hint}`);
     });
 
     // Operator Pushbuttons (Support both hold AND quick click 450ms pulse)
@@ -147,7 +147,7 @@ class LadderLabApp {
     this.btnOpOverload.classList.remove('tripped');
     this.btnOpOverload.textContent = '🛡️ Simulate Overload (I0.3)';
 
-    this.missionTitle.textContent = `Misi ${m.number}: ${m.title}`;
+    this.missionTitle.textContent = `Mission ${m.number}: ${m.title}`;
     this.missionDesc.textContent = m.description;
     this.objectiveList.innerHTML = m.objectives.map(o => `<li>${o}</li>`).join('');
 
@@ -156,7 +156,7 @@ class LadderLabApp {
     this.updatePLCStatusUI();
     this.renderVerificationReport(
       null,
-      `Misi ${m.number} dimuat. Klik kotak kontak pada diagram Ladder di bawah untuk melengkapi rangkaian, atau klik "⚡ Auto-Build Solusi" untuk melihat demo berjalan.`
+      `Mission ${m.number} loaded. Click any contact slot on the Ladder Diagram below to complete the logic, or click "⚡ Auto-Build Solution" for an instant live demo.`
     );
   }
 
@@ -177,7 +177,7 @@ class LadderLabApp {
     const result = m.verify(PLCEngine, this.plc.rungs);
     this.plc.mode = 'RUN';
     this.updatePLCStatusUI();
-    this.renderVerificationReport(result, isAutoSolution ? 'Solusi otomatis diterapkan dan diverifikasi!' : null);
+    this.renderVerificationReport(result, isAutoSolution ? 'Auto-Build Solution applied and verified!' : null);
     if (result.passed) {
       this.plant.triggerStartButton(true, true);
     }
@@ -187,8 +187,8 @@ class LadderLabApp {
     if (!result) {
       this.diagContainer.innerHTML = `
         <div class="diag-item">
-          <div class="diag-item-title">Status Verifikasi Ladder</div>
-          <div class="diag-item-detail">${infoBanner || 'Belum diverifikasi.'}</div>
+          <div class="diag-item-title">Ladder Logic Verification Status</div>
+          <div class="diag-item-detail">${infoBanner || 'Not verified yet.'}</div>
         </div>
       `;
       return;
@@ -199,7 +199,7 @@ class LadderLabApp {
       html += `
         <div class="diag-item pass">
           <div class="diag-item-title">⚡ ${infoBanner}</div>
-          <div class="diag-item-detail">Tekan tombol START (I0.0) atau amati pergerakan paket pada konveyor di atas.</div>
+          <div class="diag-item-detail">Press START (I0.0) or observe the live package motion on the conveyor above.</div>
         </div>
       `;
     }
@@ -269,15 +269,15 @@ class LadderLabApp {
     const isCoil = slotKey === 'coil';
 
     this.modalTitle.textContent = isCoil
-      ? `Konfigurasi Output / Function Block (${rung.title})`
-      : `Konfigurasi Kontak Logika (${slotKey.toUpperCase()} — ${rung.title})`;
+      ? `Configure Output / Function Block (${rung.title})`
+      : `Configure Logic Contact (${slotKey.toUpperCase()} — ${rung.title})`;
 
     this.tempSlotType = currentSlot.type || (isCoil ? 'OUT' : 'NO');
 
     const contactTypes = [
       { type: 'NO',   symbol: '─| |─', label: 'Normally Open' },
       { type: 'NC',   symbol: '─|/|─', label: 'Normally Closed' },
-      { type: 'NONE', symbol: '─────', label: 'Kosong / Jumper' }
+      { type: 'NONE', symbol: '─────', label: 'Empty / Jumper' }
     ];
 
     const coilTypes = [

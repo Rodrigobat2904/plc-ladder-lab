@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261101_02" />
+  <link rel="stylesheet" href="css/style.css?v=20261101_03" />
 </head>
 <body>
 
@@ -26,14 +26,14 @@
     </div>
 
     <div class="header-controls">
-      <select id="mission-select" class="select-modern" aria-label="Pilih Misi Industri">
-        <option value="0">Misi 01: Self-Holding Conveyor &amp; Overload Interlock</option>
-        <option value="1">Misi 02: Automated Sensor Stamping &amp; Timer (TON)</option>
-        <option value="2">Misi 03: Batch Counter &amp; Crate Limiter (CTU)</option>
+      <select id="mission-select" class="select-modern" aria-label="Select Industrial Mission">
+        <option value="0">Mission 01: Self-Holding Conveyor &amp; Overload Interlock</option>
+        <option value="1">Mission 02: Automated Sensor Stamping &amp; Timer (TON)</option>
+        <option value="2">Mission 03: Batch Counter &amp; Crate Limiter (CTU)</option>
       </select>
-      <button id="btn-hint" class="btn">💡 Petunjuk</button>
-      <button id="btn-autobuild" class="btn btn-soft-blue">⚡ Auto-Build Solusi</button>
-      <button id="btn-verify-run" class="btn btn-run">✓ Verifikasi &amp; Run PLC</button>
+      <button id="btn-hint" class="btn">💡 Hint</button>
+      <button id="btn-autobuild" class="btn btn-soft-blue">⚡ Auto-Build Solution</button>
+      <button id="btn-verify-run" class="btn btn-run">✓ Verify &amp; Run PLC</button>
       <button id="btn-plc-stop" class="btn btn-stop">⏹ Stop PLC</button>
     </div>
   </header>
@@ -47,11 +47,11 @@
       <!-- Mission Card -->
       <section class="card">
         <div class="card-header">
-          <span class="card-title">📋 Spesifikasi Misi Industri</span>
+          <span class="card-title">📋 Industrial Mission Specification</span>
           <span id="plc-status-badge" class="plc-badge run"><span class="dot"></span> PLC: RUN</span>
         </div>
         <div class="card-body">
-          <div id="mission-title" class="mission-title">Misi 01: DOL Motor Latching</div>
+          <div id="mission-title" class="mission-title">Mission 01: DOL Motor Latching</div>
           <p id="mission-desc" class="mission-desc"></p>
           <ul id="objective-list" class="objective-list"></ul>
         </div>
@@ -86,7 +86,7 @@
         <div class="card-header">
           <span class="card-title">🏭 2D Smart Factory Plant (Real-Time SCADA HMI)</span>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 0.74rem; color: var(--text-muted);">Hijau = Energi Aktif (24V DC)</span>
+            <span style="font-size: 0.74rem; color: var(--text-muted);">Emerald Green = Energized (24V DC)</span>
           </div>
         </div>
 
@@ -97,13 +97,13 @@
         <!-- Operator Pushbutton Control Station -->
         <div class="operator-bar">
           <div class="operator-buttons">
-            <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-right: 4px;">Panel Operator:</span>
+            <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-right: 4px;">Operator Panel:</span>
             <button id="btn-op-start" class="op-btn start-pb">🟢 START (I0.0)</button>
             <button id="btn-op-stop" class="op-btn stop-pb">🔴 STOP (I0.1)</button>
             <button id="btn-op-overload" class="op-btn fault-pb">🛡️ Simulate Overload (I0.3)</button>
           </div>
           <div class="operator-buttons">
-            <button id="btn-op-spawn" class="op-btn">📦 + Tambah Kardus</button>
+            <button id="btn-op-spawn" class="op-btn">📦 + Spawn Box</button>
             <button id="btn-op-reset-cnt" class="op-btn">🔄 Reset Counter (C0=0)</button>
           </div>
         </div>
@@ -128,35 +128,35 @@
   <div id="slot-modal-backdrop" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 id="slot-modal-title">Konfigurasi Elemen Ladder</h3>
+        <h3 id="slot-modal-title">Configure Ladder Element</h3>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>1. Pilih Tipe Instruksi IEC 61131-3</label>
+          <label>1. Select IEC 61131-3 Instruction Type</label>
           <div id="type-selector-grid" class="type-selector-grid"></div>
         </div>
         <div class="form-group">
-          <label for="slot-address-select">2. Pilih Alamat Bit / Register PLC</label>
+          <label for="slot-address-select">2. Select PLC Bit / Register Address</label>
           <select id="slot-address-select" class="input-modern"></select>
         </div>
         <div id="slot-preset-group" class="form-group" style="display: none;">
-          <label for="slot-preset-input">3. Nilai Preset (ms untuk TON / jumlah untuk CTU)</label>
+          <label for="slot-preset-input">3. Preset Value (ms for TON / count for CTU)</label>
           <input id="slot-preset-input" type="number" class="input-modern" value="1500" min="1" max="10000" />
         </div>
       </div>
       <div class="modal-footer">
-        <button id="btn-modal-cancel" class="btn">Batal</button>
-        <button id="btn-modal-save" class="btn btn-primary">Simpan Perubahan</button>
+        <button id="btn-modal-cancel" class="btn">Cancel</button>
+        <button id="btn-modal-save" class="btn btn-primary">Apply Changes</button>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="js/engine/plc.js?v=20261101_02"></script>
-  <script src="js/engine/plant.js?v=20261101_02"></script>
-  <script src="js/missions/missions.js?v=20261101_02"></script>
-  <script src="js/ui/scada_view.js?v=20261101_02"></script>
-  <script src="js/ui/ladder_editor.js?v=20261101_02"></script>
-  <script src="js/app.js?v=20261101_02"></script>
+  <script src="js/engine/plc.js?v=20261101_03"></script>
+  <script src="js/engine/plant.js?v=20261101_03"></script>
+  <script src="js/missions/missions.js?v=20261101_03"></script>
+  <script src="js/ui/scada_view.js?v=20261101_03"></script>
+  <script src="js/ui/ladder_editor.js?v=20261101_03"></script>
+  <script src="js/app.js?v=20261101_03"></script>
 </body>
 </html>

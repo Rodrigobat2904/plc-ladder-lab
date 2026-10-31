@@ -70,7 +70,7 @@ class LadderEditorUI {
       header.className = 'rung-header';
       header.innerHTML = `
         <span class="rung-title">${rung.title}</span>
-        <span class="rung-hint-tag">👆 Klik kotak Kontak / Cabang Paralel / Coil untuk mengubah instruksi</span>
+        <span class="rung-hint-tag">👆 Click any Contact / Parallel Branch / Coil slot to configure instruction</span>
       `;
 
       const wrap = document.createElement('div');
@@ -143,16 +143,16 @@ class LadderEditorUI {
       <path d="M 165 84 L 195 84 L 195 34" fill="none" stroke="${hasBranch ? wBranch : '#cbd5e1'}" stroke-width="${hasBranch ? '2.4' : '1.5'}" ${hasBranch ? '' : 'stroke-dasharray="4 3"'} />
 
       <!-- Slot C1 (Series Contact 1) -->
-      ${this.renderContactSlotSVG(rung.c1, 65, 12, 'c1', isRun && f.c1Cond, isRun && f.c1Flow, 'Kontak 1')}
+      ${this.renderContactSlotSVG(rung.c1, 65, 12, 'c1', isRun && f.c1Cond, isRun && f.c1Flow, 'Contact 1')}
 
       <!-- Slot Branch (Parallel Seal-in / OR Contact) -->
       ${this.renderBranchSlotSVG(rung.branch, 65, 62, 'branch', isRun && f.branchCond, isRun && f.branchFlow)}
 
       <!-- Slot C2 (Series Contact 2) -->
-      ${this.renderContactSlotSVG(rung.c2, 230, 12, 'c2', isRun && f.c2Cond, isRun && f.c2Flow, 'Kontak 2')}
+      ${this.renderContactSlotSVG(rung.c2, 230, 12, 'c2', isRun && f.c2Cond, isRun && f.c2Flow, 'Contact 2')}
 
       <!-- Slot C3 (Series Contact 3) -->
-      ${this.renderContactSlotSVG(rung.c3, 380, 12, 'c3', isRun && f.c3Cond, isRun && f.c3Flow, 'Kontak 3')}
+      ${this.renderContactSlotSVG(rung.c3, 380, 12, 'c3', isRun && f.c3Cond, isRun && f.c3Flow, 'Contact 3')}
 
       <!-- Slot Coil / Function Block -->
       ${this.renderCoilSlotSVG(rung.coil, 545, 8, 'coil', isRun && f.rungFlow, isRun && f.coilActive)}
@@ -207,7 +207,7 @@ class LadderEditorUI {
       return `
         <g class="ladder-slot" data-slot-key="${slotKey}" transform="translate(${x}, ${y})" style="cursor: pointer; pointer-events: all;">
           <rect class="slot-box" x="0" y="0" width="${w}" height="${h}" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4 3" />
-          <text x="${w / 2}" y="25" text-anchor="middle" fill="#2563eb" font-family="Inter, sans-serif" font-size="8.5" font-weight="600">+ Cabang Latch</text>
+          <text x="${w / 2}" y="25" text-anchor="middle" fill="#2563eb" font-family="Inter, sans-serif" font-size="8.5" font-weight="600">+ Parallel Latch</text>
         </g>
       `;
     }
